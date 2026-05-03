@@ -3,7 +3,8 @@ resolver = "2"
 members = [
     "wasm-core",
     "crates/*",
-    "crates/polymarket-oracle"
+    "crates/polymarket-oracle",
+    "crates/memory-node"
 ]
 
 [workspace.dependencies]

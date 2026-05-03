@@ -1,0 +1,13 @@
+[package]
+name = "memory-node"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+core-ipc = { path = "../core-ipc" }
+tokio = { workspace = true }
+sled = "0.34"
+notify = "6.1.1"
+serde = { workspace = true }
+serde_json = { workspace = true }
+bincode = "1.3"
