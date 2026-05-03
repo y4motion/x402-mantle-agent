@@ -1,0 +1,23 @@
+# Cargo
+/target/
+Cargo.lock
+
+# Logs
+*.log
+.bot.log
+.next.log
+synapse.log
+
+# OPSEC / Triarchy Internal Leaks
+.env
+.env.*
+*.mmap
+/tmp/
+*x402_ipc*
+.idea/
+.vscode/
+
+# Legacy Data
+/legacy-python/__pycache__/
+/legacy-python/env/
+/legacy-python/.venv/

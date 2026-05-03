@@ -1,0 +1,8 @@
+[package]
+name = "sniper-agent"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+core-ipc = { path = "../core-ipc" }
+tokio = { workspace = true }
