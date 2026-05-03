@@ -3,7 +3,6 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
 struct MarketData {
-    price: f64,
     rsi: f64,
 }
 
@@ -13,6 +12,7 @@ struct AgentDecision {
     reason: String,
 }
 
+#[allow(clippy::unnecessary_wraps)]
 #[plugin_fn]
 pub fn execute_strategy(Json(data): Json<MarketData>) -> FnResult<Json<AgentDecision>> {
     let mut action = "HOLD".to_string();
