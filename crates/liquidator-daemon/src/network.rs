@@ -7,10 +7,11 @@ use url::Url;
 pub async fn run_liquidator_loop() {
     let mut ipc = IpcBridge::new();
     
-    // Initialize Mantle Testnet Provider
-    let rpc_url = Url::parse("https://rpc.testnet.mantle.xyz").unwrap();
+    // Initialize Mantle Provider (Supports both Testnet and Mainnet via Env Var)
+    let rpc_str = std::env::var("MANTLE_RPC_URL").unwrap_or_else(|_| "https://rpc.testnet.mantle.xyz".to_string());
+    let rpc_url = Url::parse(&rpc_str).unwrap();
     let provider = ProviderBuilder::new().on_http(rpc_url);
-    println!("[Liquidator Daemon] Connected to Mantle RPC.");
+    println!("[Liquidator Daemon] Connected to Mantle RPC: {}", rpc_str);
 
     loop {
         if let Some(target) = engine::scan_for_targets(&provider).await {

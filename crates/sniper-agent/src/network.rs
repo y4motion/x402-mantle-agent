@@ -10,16 +10,17 @@ pub async fn run_sniper_loop() {
     let ipc = IpcBridge::new();
     let mut last_timestamp = 0;
 
-    // Initialize Provider with a dummy Wallet (for MVP testing purposes)
-    let signer = PrivateKeySigner::random();
+    // Initialize Provider with a Wallet (Supports both Testnet and Mainnet via Env Var)
+    let signer = PrivateKeySigner::random(); // In production, load from env var or keystore
     let wallet = EthereumWallet::from(signer);
-    let rpc_url = Url::parse("https://rpc.testnet.mantle.xyz").unwrap();
+    let rpc_str = std::env::var("MANTLE_RPC_URL").unwrap_or_else(|_| "https://rpc.testnet.mantle.xyz".to_string());
+    let rpc_url = Url::parse(&rpc_str).unwrap();
     let provider = ProviderBuilder::new()
         .with_recommended_fillers()
         .wallet(wallet)
         .on_http(rpc_url);
 
-    println!("[Sniper Agent] Wallet initialized and connected to Mantle Testnet.");
+    println!("[Sniper Agent] Wallet initialized and connected to Mantle RPC: {}", rpc_str);
 
     loop {
         if let Some(state) = ipc.read_state()
