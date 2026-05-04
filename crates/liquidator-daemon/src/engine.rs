@@ -31,10 +31,13 @@ where
     N: Network,
     P: Provider<T, N>,
 {
-    // We are now connected to the actual RPC.
-    // For MVP, we query a specific target on Mantle Testnet
-    let target_address = Address::from_str("0x0000000000000000000000000000000000000001").unwrap();
-    let pool_address = Address::from_str("0x0000000000000000000000000000000000000002").unwrap();
+    // Read target and pool addresses from environment
+    let target_str = std::env::var("TARGET_ADDRESS")
+        .unwrap_or_else(|_| "0x0000000000000000000000000000000000000001".to_string());
+    let pool_str = std::env::var("POOL_ADDRESS")
+        .unwrap_or_else(|_| "0x0000000000000000000000000000000000000002".to_string());
+    let target_address = Address::from_str(&target_str).unwrap();
+    let pool_address = Address::from_str(&pool_str).unwrap();
     
     let pool = ILendingPool::new(pool_address, provider);
     

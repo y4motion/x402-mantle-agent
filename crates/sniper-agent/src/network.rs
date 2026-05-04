@@ -10,8 +10,14 @@ pub async fn run_sniper_loop() {
     let ipc = IpcBridge::new();
     let mut last_timestamp = 0;
 
-    // Initialize Provider with a Wallet (Supports both Testnet and Mainnet via Env Var)
-    let signer = PrivateKeySigner::random(); // In production, load from env var or keystore
+    // Initialize Provider with a Wallet — loads from env or generates random for dev
+    let signer: PrivateKeySigner = match std::env::var("PRIVATE_KEY") {
+        Ok(key) => key.parse().expect("Invalid PRIVATE_KEY hex"),
+        Err(_) => {
+            eprintln!("[Sniper Agent] WARNING: No PRIVATE_KEY set, using random signer (dev mode)");
+            PrivateKeySigner::random()
+        }
+    };
     let wallet = EthereumWallet::from(signer);
     let rpc_str = std::env::var("MANTLE_RPC_URL").unwrap_or_else(|_| "https://rpc.testnet.mantle.xyz".to_string());
     let rpc_url = Url::parse(&rpc_str).unwrap();

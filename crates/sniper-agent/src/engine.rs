@@ -32,13 +32,17 @@ where
     T: Transport + Clone,
     P: Provider<T, Ethereum>,
 {
-    // These addresses would be the actual deployed addresses on Mantle
-    let registry_address = Address::from_str("0x0000000000000000000000000000000000000004")?;
-    let liquidator_address = Address::from_str("0x0000000000000000000000000000000000000005")?;
+    // Read deployed contract addresses from environment
+    let registry_str = std::env::var("REGISTRY_ADDRESS")
+        .expect("REGISTRY_ADDRESS env var must be set to deployed ERC8004Registry address");
+    let liquidator_str = std::env::var("LIQUIDATOR_ADDRESS")
+        .expect("LIQUIDATOR_ADDRESS env var must be set to deployed X402FlashLiquidator address");
+    let registry_address = Address::from_str(&registry_str)?;
+    let liquidator_address = Address::from_str(&liquidator_str)?;
     let target_addr = Address::from_str(target).unwrap_or(Address::ZERO);
 
     println!("[Sniper Agent] Verifying ERC-8004 Identity via Registry...");
-    let registry = ERC8004Registry::new(registry_address, provider);
+    let _registry = ERC8004Registry::new(registry_address, provider);
     
     // For MVP we assume the agent already registered and has ID 1.
     // In production, we would call `registerAgent` if `agentControllers(1)` is empty.
