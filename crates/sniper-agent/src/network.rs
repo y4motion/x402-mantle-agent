@@ -1,10 +1,25 @@
 use core_ipc::IpcBridge;
 use std::time::Duration;
 use crate::{config, engine};
+use alloy::providers::ProviderBuilder;
+use url::Url;
+use alloy::signers::local::PrivateKeySigner;
+use alloy::network::EthereumWallet;
 
 pub async fn run_sniper_loop() {
     let ipc = IpcBridge::new();
     let mut last_timestamp = 0;
+
+    // Initialize Provider with a dummy Wallet (for MVP testing purposes)
+    let signer = PrivateKeySigner::random();
+    let wallet = EthereumWallet::from(signer);
+    let rpc_url = Url::parse("https://rpc.testnet.mantle.xyz").unwrap();
+    let provider = ProviderBuilder::new()
+        .with_recommended_fillers()
+        .wallet(wallet)
+        .on_http(rpc_url);
+
+    println!("[Sniper Agent] Wallet initialized and connected to Mantle Testnet.");
 
     loop {
         if let Some(state) = ipc.read_state()
@@ -19,10 +34,13 @@ pub async fn run_sniper_loop() {
                     println!("[Sniper Agent] 🌐 Polymarket Global Sentiment Applied: {sentiment:.4}");
                     
                     let leverage_multiplier = engine::calculate_leverage_multiplier(sentiment);
-                    
                     println!("[Sniper Agent] ⚙️ Akashic WebSocket Streaming Online (Latency < 1ms)");
-                    println!("[Sniper Agent] Initiating Agni Finance Flash Loan (Leverage: {leverage_multiplier:.2}x)...");
-                    println!("[Sniper Agent] EVM Transaction Broadcasted: 0xDEADBEEF... Extraction Complete.\n");
+                    
+                    // Actually execute the transaction via Alloy
+                    match engine::execute_flash_loan_tx(&provider, &target, leverage_multiplier).await {
+                        Ok(hash) => println!("[Sniper Agent] 💥 Flash Loan successful! Hash: {}", hash),
+                        Err(e) => println!("[Sniper Agent] ❌ Flash Loan failed: {}", e),
+                    }
                 }
             }
 

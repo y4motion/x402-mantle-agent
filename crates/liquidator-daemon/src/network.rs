@@ -1,12 +1,19 @@
 use core_ipc::IpcBridge;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use crate::{config, engine};
+use alloy::providers::ProviderBuilder;
+use url::Url;
 
 pub async fn run_liquidator_loop() {
     let mut ipc = IpcBridge::new();
+    
+    // Initialize Mantle Testnet Provider
+    let rpc_url = Url::parse("https://rpc.testnet.mantle.xyz").unwrap();
+    let provider = ProviderBuilder::new().on_http(rpc_url);
+    println!("[Liquidator Daemon] Connected to Mantle RPC.");
 
     loop {
-        if let Some(target) = engine::scan_for_targets() {
+        if let Some(target) = engine::scan_for_targets(&provider).await {
             println!("[Liquidator Daemon] TARGET ACQUIRED: {} (Health: {})", target.address, target.health_factor);
             println!("[Liquidator Daemon] Human weakness detected. Preparing Agni Finance Flash Loan...");
 
