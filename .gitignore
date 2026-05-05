@@ -21,3 +21,8 @@ synapse.log
 /legacy-python/__pycache__/
 /legacy-python/env/
 /legacy-python/.venv/
+
+# Foundry build/broadcast artifacts
+contracts/out/
+contracts/cache/
+contracts/broadcast/
