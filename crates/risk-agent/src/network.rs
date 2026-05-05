@@ -10,9 +10,9 @@ pub async fn run_risk_loop() {
     loop {
         tick_count += 1;
 
-        // Legacy check (backward compat)
-        let mock_exposure = 50_000.0;
-        if !engine::is_exposure_safe(mock_exposure, config::MAX_EXPOSURE_USD) {
+        // Derive exposure from RiskGate state (bankroll - absolute daily drawdown)
+        let current_exposure = risk_gate.kill_switch.bankroll + risk_gate.kill_switch.daily_pnl;
+        if !engine::is_exposure_safe(current_exposure, config::MAX_EXPOSURE_USD) {
             println!("[Risk Agent] EXPOSURE CRITICAL. HALTING NEW TRADES.");
             tokio::time::sleep(Duration::from_millis(config::RISK_POLL_INTERVAL_MS)).await;
             continue;
