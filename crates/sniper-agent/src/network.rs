@@ -19,7 +19,7 @@ pub async fn run_sniper_loop() {
         }
     };
     let wallet = EthereumWallet::from(signer);
-    let rpc_str = std::env::var("MANTLE_RPC_URL").unwrap_or_else(|_| "https://rpc.testnet.mantle.xyz".to_string());
+    let rpc_str = std::env::var("MANTLE_RPC_URL").unwrap_or_else(|_| "https://rpc.mantle.xyz".to_string());
     let rpc_url = Url::parse(&rpc_str).unwrap();
     let provider = ProviderBuilder::new()
         .with_recommended_fillers()

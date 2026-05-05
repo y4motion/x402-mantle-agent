@@ -8,7 +8,7 @@ pub async fn run_liquidator_loop() {
     let mut ipc = IpcBridge::new();
     
     // Initialize Mantle Provider (Supports both Testnet and Mainnet via Env Var)
-    let rpc_str = std::env::var("MANTLE_RPC_URL").unwrap_or_else(|_| "https://rpc.testnet.mantle.xyz".to_string());
+    let rpc_str = std::env::var("MANTLE_RPC_URL").unwrap_or_else(|_| "https://rpc.mantle.xyz".to_string());
     let rpc_url = Url::parse(&rpc_str).unwrap();
     let provider = ProviderBuilder::new().on_http(rpc_url);
     println!("[Liquidator Daemon] Connected to Mantle RPC: {}", rpc_str);
