@@ -112,10 +112,10 @@ impl BucketCapGuard {
 
     /// Check if opening a position on `symbol` would breach bucket cap.
     pub fn can_open(&self, symbol: &str) -> bool {
-        if let Some(bucket_name) = self.symbol_map.get(symbol) {
-            if let Some((max, open)) = self.buckets.get(bucket_name) {
-                return open.len() < *max;
-            }
+        if let Some(bucket_name) = self.symbol_map.get(symbol)
+            && let Some((max, open)) = self.buckets.get(bucket_name)
+        {
+            return open.len() < *max;
         }
         // Unknown symbols are unconstrained
         true
@@ -123,21 +123,20 @@ impl BucketCapGuard {
 
     /// Register an opened position.
     pub fn register_open(&mut self, symbol: &str) {
-        if let Some(bucket_name) = self.symbol_map.get(symbol).cloned() {
-            if let Some((_max, open)) = self.buckets.get_mut(&bucket_name) {
-                if !open.contains(&symbol.to_string()) {
-                    open.push(symbol.to_string());
-                }
-            }
+        if let Some(bucket_name) = self.symbol_map.get(symbol).cloned()
+            && let Some((_max, open)) = self.buckets.get_mut(&bucket_name)
+            && !open.contains(&symbol.to_string())
+        {
+            open.push(symbol.to_string());
         }
     }
 
     /// Unregister a closed position.
     pub fn register_close(&mut self, symbol: &str) {
-        if let Some(bucket_name) = self.symbol_map.get(symbol).cloned() {
-            if let Some((_max, open)) = self.buckets.get_mut(&bucket_name) {
-                open.retain(|s| s != symbol);
-            }
+        if let Some(bucket_name) = self.symbol_map.get(symbol).cloned()
+            && let Some((_max, open)) = self.buckets.get_mut(&bucket_name)
+        {
+            open.retain(|s| s != symbol);
         }
     }
 }
